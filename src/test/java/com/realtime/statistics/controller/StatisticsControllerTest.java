@@ -34,8 +34,6 @@ public class StatisticsControllerTest {
     @Value("${application.test.host}")
     private String host;
 
-
-
     @Test
     public void getsZeroInstrumentCountWhenNoInstrumentsPosted(){
 
@@ -129,24 +127,7 @@ public class StatisticsControllerTest {
 
     }
 
-    @Test
-    public void returnsValidStatisticsWhenInstrumentAddedSuccessfully(){
 
-        InstrumentTransaction instrumentTransaction = new InstrumentTransaction("IBM",100.00, Instant.now().toEpochMilli());
-        HttpEntity<InstrumentTransaction> entity = new HttpEntity<>(instrumentTransaction, getHttpHeaders());
-        restTemplate.exchange(createURLWithPort("/tick",
-                host, port), HttpMethod.POST, entity, InstrumentTransaction.class);
-
-        ResponseEntity<TransactionStatistics> resp = restTemplate.exchange(createURLWithPort("/statistics",
-                host, port), HttpMethod.GET, entity, TransactionStatistics.class);
-
-        assertNotNull(resp);
-        assertSame(1L,resp.getBody().getCount());
-        assertEquals(100.00,resp.getBody().getAvg(),0);
-        assertEquals(100.00,resp.getBody().getMax(),0);
-        assertEquals(100.00,resp.getBody().getMin(),0);
-
-    }
 
     @Test
     public void returnsInstrumentSpecificStatisticsWhenInstrumentAddedSuccessfully(){
@@ -182,6 +163,48 @@ public class StatisticsControllerTest {
         mediaTypeList.add(MediaType.APPLICATION_JSON);
         httpHeaders.setAccept(mediaTypeList);
         return httpHeaders;
+    }
+
+    @Test
+    public void returnsValidStatisticsWhenInstrumentAddedSuccessfully() throws InterruptedException {
+
+        //Adding a delay of 60 secs to avoid the instruments added by other tests.
+        Thread.sleep(60000);
+        InstrumentTransaction instrumentTransaction = new InstrumentTransaction("ATT",100.00, Instant.now().toEpochMilli());
+        HttpEntity<InstrumentTransaction> entity = new HttpEntity<>(instrumentTransaction, getHttpHeaders());
+        restTemplate.exchange(createURLWithPort("/tick",
+                host, port), HttpMethod.POST, entity, InstrumentTransaction.class);
+
+        ResponseEntity<TransactionStatistics> resp = restTemplate.exchange(createURLWithPort("/statistics",
+                host, port), HttpMethod.GET, entity, TransactionStatistics.class);
+
+        assertNotNull(resp);
+        assertEquals(100.00,resp.getBody().getAvg(),0);
+        assertEquals(100.00,resp.getBody().getMax(),0);
+        assertEquals(100.00,resp.getBody().getMin(),0);
+
+    }
+
+    @Test
+    public void doesNotReturnStatisticsOlderThan60Secs() throws InterruptedException {
+
+        InstrumentTransaction instrumentTransaction = new InstrumentTransaction("AMX",900.00, Instant.now().toEpochMilli());
+        HttpEntity<InstrumentTransaction> entity = new HttpEntity<>(instrumentTransaction, getHttpHeaders());
+        restTemplate.exchange(createURLWithPort("/tick",
+                host, port), HttpMethod.POST, entity, InstrumentTransaction.class);
+
+        //Adding delay of 60 secs to test that the transaction added above is not being returned.
+        Thread.sleep(60000);
+
+        ResponseEntity<TransactionStatistics> resp = restTemplate.exchange(createURLWithPort("/statistics",
+                host, port), HttpMethod.GET, entity, TransactionStatistics.class);
+
+        assertNotNull(resp);
+        assertEquals(0.00,resp.getBody().getCount(),0);
+        assertEquals(0.00,resp.getBody().getAvg(),0);
+        assertEquals(0.00,resp.getBody().getMax(),0);
+        assertEquals(0.00,resp.getBody().getMin(),0);
+
     }
 
 
