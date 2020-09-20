@@ -1,9 +1,13 @@
 package com.realtime.statistics.model;
 
-import lombok.Data;
+import lombok.*;
+
 import javax.validation.constraints.NotNull;
 
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
 public class InstrumentTransaction {
 
     @NotNull(message = "Instrument is a mandatory field")
