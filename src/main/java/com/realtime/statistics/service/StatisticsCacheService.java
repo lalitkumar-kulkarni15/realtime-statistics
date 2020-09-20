@@ -9,4 +9,6 @@ public interface StatisticsCacheService {
 
     TransactionStatistics getTransactionStatistics();
 
+    TransactionStatistics getTransactionStatistics(final String instrument);
+
 }

@@ -9,7 +9,9 @@ import com.realtime.statistics.service.StatisticsCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
+import javax.swing.text.html.Option;
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 public class StatisticsCacheServiceImpl implements StatisticsCacheService {
@@ -51,6 +53,37 @@ public class StatisticsCacheServiceImpl implements StatisticsCacheService {
             if (isTransactionValid(transactionStatisticsAgg.getTimestamp(), currentTimestamp, transactionTimeConfig.getMaxTimeAllowed())) {
                 aggregatorRecordCounter++;
                 transactionStatisticsAgg.mergeToResult(resultantStatistics,aggregatorRecordCounter);
+            }
+
+        }
+
+        return resultantStatistics;
+
+
+    }
+
+    @Override
+    public synchronized TransactionStatistics getTransactionStatistics(final String instrument) {
+
+        long currentTimestamp = Instant.now().toEpochMilli();
+        TransactionStatistics resultantStatistics = new TransactionStatistics();
+        int aggregatorRecordCounter = 0;
+
+        for(TransactionStatisticsAggregator transactionStatisticsAgg : transactionStatisticsAggregator) {
+
+            if(Optional.of(transactionStatisticsAgg.getTransactionStatisticsMap()).isPresent()) {
+
+                if(transactionStatisticsAgg.getTransactionStatisticsMap().containsKey(instrument)){
+
+                    TransactionStatistics transactionStatistics = transactionStatisticsAgg.getTransactionStatisticsMap().get(instrument);
+
+                    if (isTransactionValid(transactionStatistics.getTimestamp(), currentTimestamp, transactionTimeConfig.getMaxTimeAllowed())) {
+                        aggregatorRecordCounter++;
+                        transactionStatisticsAgg.mergeToResult(resultantStatistics,aggregatorRecordCounter);
+                    }
+
+                }
+
             }
 
         }
