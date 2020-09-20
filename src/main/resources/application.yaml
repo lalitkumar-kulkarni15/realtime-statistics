@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+transaction:
+  maxTimeAllowed: 60000
+  timeSamplingInterval : 1000
