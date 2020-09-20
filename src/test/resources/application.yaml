@@ -9,3 +9,7 @@ application:
   test:
     host: localhost
 
+spring:
+  autoconfigure:
+    exclude: net.bull.javamelody.JavaMelodyAutoConfiguration
+
