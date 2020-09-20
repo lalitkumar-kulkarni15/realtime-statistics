@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import static com.realtime.statistics.utils.TestUtils.createURLWithPort;
 import static org.junit.Assert.*;
 
@@ -43,7 +44,7 @@ public class StatisticsControllerTest {
 
         assertNotNull(response);
         assertSame(HttpStatus.OK,response.getStatusCode());
-        assertEquals(0.0,response.getBody().getSum(),0);
+        assertEquals(0.0,response.getBody().getCount(),0);
 
     }
 
@@ -87,7 +88,7 @@ public class StatisticsControllerTest {
     }
 
     @Test
-    public void throwsBadRequestWhenInstrumentAddedWithoutInstrumentName(){
+    public void throws400BadRequestWhenInstrumentAddedWithoutInstrumentName(){
 
         InstrumentTransaction instrumentTransaction = new InstrumentTransaction(null,20.00,Instant.now().toEpochMilli());
         HttpEntity<InstrumentTransaction> entity = new HttpEntity<>(instrumentTransaction, getHttpHeaders());
@@ -112,8 +113,6 @@ public class StatisticsControllerTest {
 
     }
 
-
-
     @Test
     public void returnsHttpStatusNoContentWhenInstrumentAddedWithOldTimestamp(){
 
@@ -126,8 +125,6 @@ public class StatisticsControllerTest {
         assertSame(HttpStatus.NO_CONTENT,response.getStatusCode());
 
     }
-
-
 
     @Test
     public void returnsInstrumentSpecificStatisticsWhenInstrumentAddedSuccessfully(){
@@ -154,22 +151,11 @@ public class StatisticsControllerTest {
 
     }
 
-
-    private HttpHeaders getHttpHeaders(){
-
-        httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        List<MediaType> mediaTypeList = new ArrayList<>();
-        mediaTypeList.add(MediaType.APPLICATION_JSON);
-        httpHeaders.setAccept(mediaTypeList);
-        return httpHeaders;
-    }
-
     @Test
     public void returnsValidStatisticsWhenInstrumentAddedSuccessfully() throws InterruptedException {
 
         //Adding a delay of 60 secs to avoid the instruments added by other tests.
-        Thread.sleep(60000);
+        TimeUnit.MINUTES.sleep(1);
         InstrumentTransaction instrumentTransaction = new InstrumentTransaction("ATT",100.00, Instant.now().toEpochMilli());
         HttpEntity<InstrumentTransaction> entity = new HttpEntity<>(instrumentTransaction, getHttpHeaders());
         restTemplate.exchange(createURLWithPort("/tick",
@@ -194,7 +180,7 @@ public class StatisticsControllerTest {
                 host, port), HttpMethod.POST, entity, InstrumentTransaction.class);
 
         //Adding delay of 60 secs to test that the transaction added above is not being returned.
-        Thread.sleep(60000);
+        TimeUnit.MINUTES.sleep(1);
 
         ResponseEntity<TransactionStatistics> resp = restTemplate.exchange(createURLWithPort("/statistics",
                 host, port), HttpMethod.GET, entity, TransactionStatistics.class);
@@ -207,5 +193,14 @@ public class StatisticsControllerTest {
 
     }
 
+    private HttpHeaders getHttpHeaders(){
+
+        httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        List<MediaType> mediaTypeList = new ArrayList<>();
+        mediaTypeList.add(MediaType.APPLICATION_JSON);
+        httpHeaders.setAccept(mediaTypeList);
+        return httpHeaders;
+    }
 
 }
