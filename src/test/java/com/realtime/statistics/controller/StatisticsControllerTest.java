@@ -36,19 +36,6 @@ public class StatisticsControllerTest {
     private String host;
 
     @Test
-    public void getsZeroInstrumentCountWhenNoInstrumentsPosted(){
-
-        HttpEntity<InstrumentTransaction> entity = new HttpEntity<>(getHttpHeaders());
-        ResponseEntity<TransactionStatistics> response = restTemplate.exchange(createURLWithPort("/statistics",
-                host, port), HttpMethod.GET, entity, TransactionStatistics.class);
-
-        assertNotNull(response);
-        assertSame(HttpStatus.OK,response.getStatusCode());
-        assertEquals(0.0,response.getBody().getCount(),0);
-
-    }
-
-    @Test
     public void getsZeroInstrumentMaxWhenNoInstrumentsPosted(){
 
         HttpEntity<InstrumentTransaction> entity = new HttpEntity<>(getHttpHeaders());
