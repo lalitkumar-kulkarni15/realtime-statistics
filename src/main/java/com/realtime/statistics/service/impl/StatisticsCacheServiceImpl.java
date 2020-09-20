@@ -9,9 +9,7 @@ import com.realtime.statistics.service.StatisticsCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
-import javax.swing.text.html.Option;
 import java.time.Instant;
-import java.util.Optional;
 
 @Service
 public class StatisticsCacheServiceImpl implements StatisticsCacheService {
@@ -21,14 +19,15 @@ public class StatisticsCacheServiceImpl implements StatisticsCacheService {
 
     private TransactionStatisticsAggregator[] transactionStatisticsAggregator;
 
-    private StatisticsCacheServiceImpl(){}
+    private StatisticsCacheServiceImpl() {
+    }
 
     @PostConstruct
-    private void initialiseTransactionStatisticsAggregator(){
+    private void initialiseTransactionStatisticsAggregator() {
 
         this.transactionStatisticsAggregator = new TransactionStatisticsAggregator[transactionTimeConfig.getMaxTimeAllowed() / transactionTimeConfig.getTimeSamplingInterval()];
 
-        for (int arrayIndex = 0; arrayIndex < transactionStatisticsAggregator.length; arrayIndex++){
+        for (int arrayIndex = 0; arrayIndex < transactionStatisticsAggregator.length; arrayIndex++) {
             transactionStatisticsAggregator[arrayIndex] = new TransactionStatisticsAggregator();
         }
     }
@@ -48,17 +47,16 @@ public class StatisticsCacheServiceImpl implements StatisticsCacheService {
         TransactionStatistics resultantStatistics = new TransactionStatistics();
         int aggregatorRecordCounter = 0;
 
-        for(TransactionStatisticsAggregator transactionStatisticsAgg : transactionStatisticsAggregator) {
+        for (TransactionStatisticsAggregator transactionStatisticsAgg : transactionStatisticsAggregator) {
 
             if (isTransactionValid(transactionStatisticsAgg.getTimestamp(), currentTimestamp, transactionTimeConfig.getMaxTimeAllowed())) {
                 aggregatorRecordCounter++;
-                transactionStatisticsAgg.mergeToResult(resultantStatistics,aggregatorRecordCounter);
+                transactionStatisticsAgg.mergeToResult(resultantStatistics, aggregatorRecordCounter);
             }
 
         }
 
         return resultantStatistics;
-
 
     }
 
@@ -69,26 +67,27 @@ public class StatisticsCacheServiceImpl implements StatisticsCacheService {
         TransactionStatistics resultantStatistics = new TransactionStatistics();
         int aggregatorRecordCounter = 0;
 
-        for(TransactionStatisticsAggregator transactionStatisticsAgg : transactionStatisticsAggregator) {
+        for (TransactionStatisticsAggregator transactionStatisticsAgg : transactionStatisticsAggregator) {
 
-            if(Optional.of(transactionStatisticsAgg.getTransactionStatisticsMap()).isPresent()) {
+            if (transactionStatisticsAgg.getTransactionStatisticsMap().containsKey(instrument)) {
 
-                if(transactionStatisticsAgg.getTransactionStatisticsMap().containsKey(instrument)){
+                TransactionStatistics transactionStatistics = transactionStatisticsAgg.getTransactionStatisticsMap().get(instrument);
 
-                    TransactionStatistics transactionStatistics = transactionStatisticsAgg.getTransactionStatisticsMap().get(instrument);
-
-                    if (isTransactionValid(transactionStatistics.getTimestamp(), currentTimestamp, transactionTimeConfig.getMaxTimeAllowed())) {
-                        aggregatorRecordCounter++;
-                        transactionStatisticsAgg.mergeToResult(resultantStatistics,aggregatorRecordCounter);
-                    }
-
-                }
+                populateResultantStatistics(currentTimestamp, resultantStatistics, aggregatorRecordCounter, transactionStatisticsAgg, transactionStatistics);
 
             }
-
         }
 
         return resultantStatistics;
+    }
+
+    private void populateResultantStatistics(long currentTimestamp, TransactionStatistics resultantStatistics, int aggregatorRecordCounter, TransactionStatisticsAggregator transactionStatisticsAgg, TransactionStatistics transactionStatistics) {
+
+        if (isTransactionValid(transactionStatistics.getTimestamp(), currentTimestamp, transactionTimeConfig.getMaxTimeAllowed())) {
+            aggregatorRecordCounter++;
+            transactionStatisticsAgg.mergeToResult(resultantStatistics, aggregatorRecordCounter);
+        }
+
     }
 
     private void aggregateTransactions(InstrumentTransaction instrumentTransaction, long currentTimestamp) {
@@ -133,7 +132,7 @@ public class StatisticsCacheServiceImpl implements StatisticsCacheService {
         return (int) ((currentTimestamp - txnTime) / transactionTimeConfig.getTimeSamplingInterval()) % (transactionTimeConfig.getMaxTimeAllowed() / transactionTimeConfig.getTimeSamplingInterval());
     }
 
-    private boolean isTransactionValid(long txnTimeStamp, long currentTimestamp, int maxTimeAllowed){
+    private boolean isTransactionValid(long txnTimeStamp, long currentTimestamp, int maxTimeAllowed) {
         return !isTransactionOutOfRange(txnTimeStamp, currentTimestamp, maxTimeAllowed);
     }
 
