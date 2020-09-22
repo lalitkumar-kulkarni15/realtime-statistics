@@ -28,6 +28,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         List<String> errors = new ArrayList<>();
         populateErrorList(methodArgumentNotValidException, errors);
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, INVALID_REQUEST, errors);
+        log.error(apiError.getMessage());
         return handleExceptionInternal(methodArgumentNotValidException, apiError, headers, apiError.getStatus(), request);
     }
 

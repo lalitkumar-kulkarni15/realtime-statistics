@@ -1,7 +1,6 @@
 package com.realtime.statistics.model;
 
 import lombok.Getter;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -14,13 +13,15 @@ public class TransactionStatisticsAggregator {
 	
 	private TransactionStatistics transactionStatistics;
 
-	private Map<String,TransactionStatistics> transactionStatisticsMap = new ConcurrentHashMap<>();
+	private Map<String,TransactionStatistics> transactionStatisticsMap;
 
 	private long timestamp;
 	
 	public TransactionStatisticsAggregator(){
-		transactionStatistics = new TransactionStatistics();
+
 		this.lock = new ReentrantReadWriteLock();
+		transactionStatistics = new TransactionStatistics();
+		transactionStatisticsMap = new ConcurrentHashMap<>();
 	}
 	
 	public void createTransactionStatistics(InstrumentTransaction instrumentTransaction){
@@ -80,6 +81,8 @@ public class TransactionStatisticsAggregator {
 		if (transactionStatistics.getMax() < instrumentTransaction.getPrice()){
 			transactionStatistics.setMax(instrumentTransaction.getPrice());
 		}
+
+		transactionStatisticsMap.put(instrumentTransaction.getInstrument(),transactionStatistics);
 
 	}
 

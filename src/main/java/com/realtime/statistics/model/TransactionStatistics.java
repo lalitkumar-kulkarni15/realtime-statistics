@@ -1,9 +1,13 @@
 package com.realtime.statistics.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@AllArgsConstructor
+@Getter
+@Setter
 public class TransactionStatistics {
 
     public TransactionStatistics(){
@@ -14,8 +18,11 @@ public class TransactionStatistics {
 
     @JsonIgnore
     private double sum;
+
     private double max;
+
     private double min;
+
     private long count;
 
     @JsonIgnore

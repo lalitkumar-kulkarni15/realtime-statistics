@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class TransactionTimeConfig {
 
     private int maxTimeAllowed;
+
     private int timeSamplingInterval;
 
 }
