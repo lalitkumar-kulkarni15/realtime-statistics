@@ -7,11 +7,11 @@ import com.realtime.statistics.model.TransactionStatistics;
 import com.realtime.statistics.model.TransactionStatisticsAggregator;
 import com.realtime.statistics.service.StatisticsCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.time.Instant;
 
-@Service
+@Component
 public class StatisticsCacheServiceImpl implements StatisticsCacheService {
 
     @Autowired
