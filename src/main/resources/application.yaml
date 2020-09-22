@@ -4,14 +4,4 @@ server:
 transaction:
   maxTimeAllowed: 60000
   timeSamplingInterval : 1000
-
-swagger:
-  title: Realtime-Statistics.
-  basePackage: com.realtime.statistics.controller
-  email: lalitkulkarniofficial@gmail.com.
-  liscence: Registered under the MIT Lisence.
-  profileLink: https://www.linkedin.com/in/lalitkumar-kulkarni-42159532/
-  name: Lalitkumar Kulkarni
-  version: 1.0
-  description: This project contains 3 API :- 1) /tick - This API adds a new instrument transaction to the data store. 2) /statistics - This endpoint returns the aggregated statistics of all the instruments from last 60 secs 3) /statistics/{instrument_name} - This endpoint returns the aggregated statistics for the specified instrument for the last 60 secs. 
                
