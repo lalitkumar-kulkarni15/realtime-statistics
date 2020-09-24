@@ -21,7 +21,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import static com.realtime.statistics.utils.TestUtils.createURLWithPort;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
@@ -195,6 +194,11 @@ public class StatisticsControllerTest {
         mediaTypeList.add(MediaType.APPLICATION_JSON);
         httpHeaders.setAccept(mediaTypeList);
         return httpHeaders;
+    }
+
+    private String createURLWithPort(final String uri, final String host,
+                                           final String port) {
+        return "http://" + host + ":" + port + uri;
     }
 
 }

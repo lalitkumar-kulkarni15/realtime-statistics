@@ -22,7 +22,7 @@ public class TransactionStatisticsCacheImpl implements TransactionCache {
     private TransactionStatisticsAggregator[] transactionStatisticsAggregatorArr;
 
     @PostConstruct
-    private void initialiseTransactionStatisticsAggregator() {
+    public void initialiseTransactionStatisticsAggregator() {
 
         this.transactionStatisticsAggregatorArr = new TransactionStatisticsAggregator[transactionTimeConfig.getMaxTimeAllowed() / transactionTimeConfig.getTimeSamplingInterval()];
 
@@ -68,25 +68,27 @@ public class TransactionStatisticsCacheImpl implements TransactionCache {
 
         for (TransactionStatisticsAggregator transactionStatisticsAgg : transactionStatisticsAggregatorArr) {
 
-            if (transactionStatisticsAgg.getTransactionStatisticsMap().containsKey(instrument)) {
+            if (transactionStatisticsAgg.getTransactionStatisticsMap().containsKey(instrument) &&
+                    isTransactionValid(transactionStatisticsAgg.getTimestamp(), currentTimestamp, transactionTimeConfig.getMaxTimeAllowed())) {
 
+                aggregatorRecordCounter++;
                 TransactionStatistics transactionStatistics = transactionStatisticsAgg.getTransactionStatisticsMap().get(instrument);
+                resultantStatistics.setSum(resultantStatistics.getSum() + transactionStatistics.getSum());
+                resultantStatistics.setCount(resultantStatistics.getCount() + transactionStatistics.getCount());
+                resultantStatistics.setAvg(resultantStatistics.getSum() / resultantStatistics.getCount());
 
-                populateResultantStatistics(currentTimestamp, resultantStatistics, aggregatorRecordCounter, transactionStatisticsAgg, transactionStatistics);
+                if (1 == aggregatorRecordCounter || resultantStatistics.getMin() > transactionStatistics.getMin()) {
+                    resultantStatistics.setMin(transactionStatistics.getMin());
+                }
+
+                if (resultantStatistics.getMax() < transactionStatistics.getMax()) {
+                    resultantStatistics.setMax(transactionStatistics.getMax());
+                }
 
             }
         }
 
         return resultantStatistics;
-    }
-
-    private void populateResultantStatistics(long currentTimestamp, TransactionStatistics resultantStatistics, int aggregatorRecordCounter, TransactionStatisticsAggregator transactionStatisticsAgg, TransactionStatistics transactionStatistics) {
-
-        if (isTransactionValid(transactionStatistics.getTimestamp(), currentTimestamp, transactionTimeConfig.getMaxTimeAllowed())) {
-            aggregatorRecordCounter++;
-            transactionStatisticsAgg.mergeToResult(resultantStatistics, aggregatorRecordCounter);
-        }
-
     }
 
     private void aggregateTransactions(InstrumentTransaction instrumentTransaction, long currentTimestamp) {
@@ -136,6 +138,5 @@ public class TransactionStatisticsCacheImpl implements TransactionCache {
     private boolean isTransactionOutOfRange(long txnTimeStamp, long currentTimestamp, int maxTimeAllowed) {
         return txnTimeStamp <= currentTimestamp - maxTimeAllowed;
     }
-
 
 }

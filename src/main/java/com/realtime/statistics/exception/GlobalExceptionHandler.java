@@ -32,12 +32,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(methodArgumentNotValidException, apiError, headers, apiError.getStatus(), request);
     }
 
-    @ExceptionHandler({TransactionOutOfRangeException.class })
-    public ResponseEntity<ApiError> handleTransactionOutOfRangeException(TransactionOutOfRangeException transactionOutOfRangeException){
+    @ExceptionHandler({TransactionOutOfRangeException.class})
+    public ResponseEntity<ApiError> handleTransactionOutOfRangeException(TransactionOutOfRangeException transactionOutOfRangeException) {
 
         final ApiError apiError = new ApiError(HttpStatus.NO_CONTENT, "Invalid transaction", transactionOutOfRangeException.getMessage());
         log.error(transactionOutOfRangeException.getMessage());
-        return new ResponseEntity<>(apiError,HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(apiError, HttpStatus.NO_CONTENT);
     }
 
     private void populateErrorList(MethodArgumentNotValidException methodArgumentNotValidException, List<String> errors) {

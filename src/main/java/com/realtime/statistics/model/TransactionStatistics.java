@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class TransactionStatistics {
 
-    public TransactionStatistics(){
+    public TransactionStatistics() {
         reset();
     }
 
@@ -28,7 +28,7 @@ public class TransactionStatistics {
     @JsonIgnore
     private long timestamp;
 
-    public void reset(){
+    public void reset() {
         this.sum = 0;
         this.avg = 0;
         this.max = 0;

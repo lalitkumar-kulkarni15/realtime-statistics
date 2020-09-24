@@ -10,7 +10,7 @@ import javax.validation.Valid;
 
 /**
  * <p>This class exposes 3 rest endpoints which adds the instrument transaction to the data store
- *    and retrieves the aggregated statistics of the last 60 seconds</p>
+ * and retrieves the aggregated statistics of the last 60 seconds</p>
  */
 @RestController
 public class StatisticsController {
@@ -28,15 +28,15 @@ public class StatisticsController {
     }
 
     @GetMapping("/statistics")
-    public ResponseEntity<TransactionStatistics> getStatistics(){
+    public ResponseEntity<TransactionStatistics> getStatistics() {
         final TransactionStatistics transactionStatistics = transactionCache.getTransactionStatistics();
-        return new ResponseEntity<>(transactionStatistics,HttpStatus.OK);
+        return new ResponseEntity<>(transactionStatistics, HttpStatus.OK);
     }
 
     @GetMapping("/statistics/{instrument_identifier}")
-    public ResponseEntity<TransactionStatistics> getStatistics(@PathVariable(name = "instrument_identifier") String instrumentIdentifier){
+    public ResponseEntity<TransactionStatistics> getStatistics(@PathVariable(name = "instrument_identifier") String instrumentIdentifier) {
         final TransactionStatistics transactionStatistics = transactionCache.getTransactionStatistics(instrumentIdentifier);
-        return new ResponseEntity<>(transactionStatistics,HttpStatus.OK);
+        return new ResponseEntity<>(transactionStatistics, HttpStatus.OK);
     }
 
 }

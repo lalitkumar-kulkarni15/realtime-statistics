@@ -3,10 +3,10 @@ package com.realtime.statistics.model;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.Map;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TransactionStatisticsAggregatorTest {
@@ -129,7 +129,5 @@ public class TransactionStatisticsAggregatorTest {
         assertEquals(500.00,transactionStatistics.getMax(),0);
 
     }
-
-
 
 }
