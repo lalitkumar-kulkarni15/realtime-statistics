@@ -5,6 +5,8 @@ import com.realtime.statistics.exception.TransactionOutOfRangeException;
 import com.realtime.statistics.model.InstrumentTransaction;
 import com.realtime.statistics.model.TransactionStatistics;
 import com.realtime.statistics.service.impl.TransactionStatisticsCacheImpl;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {RealtimeStatisticsApplication.class})
