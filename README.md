@@ -1,9 +1,9 @@
 #Realtime-Statistics-API
-================================================================================================================
+==========================================================================================================
 
 - Steps to run the project :- 
 
-================================================================================================================
+================================================================================================
 
 Step 1 : Git Clone - Please clone the project at a local directory using the above mentioned url.
 
@@ -23,11 +23,11 @@ Step 5 : After the tomcat server is successfully up without any errors in the co
 - Swagger UI page will be opened which has all the details of the 3 API.
 - This swagger UI can also be used to test the 3 API endpoints by passing appropriate data in the request.
 
-===================================================================================================================
+=========================================================================================
 
 - How to set up workspace in IDE ? 
 
-====================================================================================================================
+==========================================================================================
 
 1) The code can be cloned in any IDE of your choice ex :- Eclipse / Intellij idea etc.
 2) Please note that Lombok plugin is used in the application for getting rid of the boiler plate code. Thus
@@ -35,11 +35,11 @@ Step 5 : After the tomcat server is successfully up without any errors in the co
    successfully compile in the IDE. ( Maven dependency of lombok is already added in the pom.xml thus it will successfully compile 
    when running maven lifecycle commands )
 
-===================================================================================================================
+==========================================================================================
  
 - Design and approach of the solution - 		
 
-==================================================================================================================
+==========================================================================================
 
 1) The requirement of the application is to store the incomming instrument statistics in the in-memory data store
    such that the get calls should be executed in O(1) time and space complexity.
@@ -83,11 +83,11 @@ Step 5 : After the tomcat server is successfully up without any errors in the co
 9) Thus when a GET call with the instrument name is received we iterate this fixed size array and find if the record of this instrument is present in this map
    for that particular index. If  yes we do a map.get operation and consider it for statistics aggregation if it satisfies the time validity criteria.
 
-=======================================================================================================================================================
+=====================================================================================================
 
 - Below are the urls of the 3 API :- 
 
-=======================================================================================================================================================   
+=====================================================================================================  
 
 1) POST : http://localhost:9082/tick
 
@@ -95,43 +95,42 @@ Step 5 : After the tomcat server is successfully up without any errors in the co
 
 3) GET  : localhost:9082/statistics/IBM ( example - we can replace the name of instrument in place of IBM )
 
-==================================================================================================================
+=====================================================================================================
 
 - Assumptions
 
-===================================================================================================================
+=====================================================================================================
 
 1) Have assumed the time slicing interval to be 1 sec. This is configurable in the property file.
 
-===================================================================================================================
+======================================================================================================
 
 - Possible enhancements - 
 
 1) Spring security - JWT. - If I had more time I would like to have this API secured using spring security.
 
-===================================================================================================================
-
+====================================================================================================
 - Code quality :- 
 
-===================================================================================================================
+======================================================================================================
 
 1) Code coverage - Have uploaded the code coverage report of the application alongwith, which comes out to be around 97.5 %
 2) SONAR         - The source code is staticaly scanned using SONAR with no significant issues seen. 
 
-=====================================================================================================================
+========================================================================================================
 
 - Attachments - 
 
-======================================================================================================================
+=========================================================================================================
 
 1) Code coverage report.
 2) Swagger UI snapshots.
 
-======================================================================================================================
+==========================================================================================================
 
 Thank you,
 
 Lalit Kulkarni
 
 
-======================================================================================================================
+===========================================================================================================
